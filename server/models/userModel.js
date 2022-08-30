@@ -50,6 +50,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  birthday: Date,
+  phoneNumber: {
+    type: [String],
+    match: /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)?\d{4}$/,
+  },
+  eventsList: {
+    type: [{ title: String, start: Date, end: Date }],
+  },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

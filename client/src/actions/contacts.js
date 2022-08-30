@@ -1,4 +1,6 @@
 import fetchData from "./utils/fetchData";
+import axios from "axios";
+
 const url = `http://localhost:8000/api/v1/contacts`;
 export const getAllContacts = async (currentUser, dispatch) => {
   const result = await fetchData(
@@ -9,7 +11,6 @@ export const getAllContacts = async (currentUser, dispatch) => {
     },
     dispatch
   );
-  console.log(result);
   if (result.results > 0) {
     dispatch({ type: "UPDATE_ALL_CONTACTS", payload: result.data });
   }
@@ -24,7 +25,6 @@ export const getContactsCategory = async (currentUser, dispatch) => {
     dispatch
   );
   if (result.category.length > 0) {
-    console.log(result.category);
     dispatch({ type: "UPDATE_CONTACTS_CATEGORY", payload: result.category });
   }
 };
@@ -55,29 +55,43 @@ export const deleteContact = async (currentUser, dispatch, id) => {
   dispatch({ type: "END_LOADING" });
 };
 
-export const createContact = async (currentUser, dispatch, contact) => {
-  const result = await fetchData(
-    {
-      url: `http://localhost:8000/api/v1/contacts`,
-      method: "POST",
-      token: currentUser.token,
-      body: contact,
-    },
-    dispatch
-  );
-  if (result) {
+export const createContact = async (currentUser, dispatch, body) => {
+  try {
+    const data = await axios.post(
+      `http://localhost:8000/api/v1/contacts`,
+      body,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${currentUser.token}`,
+        },
+      }
+    );
+    console.log(data);
+    if (data.status == "error" || data.status == "fail") {
+      throw new Error(data.message);
+    }
+    if (data) {
+      dispatch({
+        type: "UPDATE_ALERT",
+        payload: {
+          open: true,
+          severity: "success",
+          message: "The contact has been updated successfully",
+        },
+      });
+      dispatch({
+        type: "ADDED_A_NEW_CONTACT",
+        payload: data.data.data,
+      });
+    }
+  } catch (error) {
     dispatch({
       type: "UPDATE_ALERT",
-      payload: {
-        open: true,
-        severity: "success",
-        message: "The contact has been updated successfully",
-      },
+      payload: { open: true, severity: "error", message: error.message },
     });
-    dispatch({
-      type: "ADDED_A_NEW_CONTACT",
-      payload: result.data,
-    });
+    console.log(error);
+    return null;
   }
 };
 

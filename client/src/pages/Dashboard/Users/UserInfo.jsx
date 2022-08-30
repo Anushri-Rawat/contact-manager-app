@@ -39,6 +39,20 @@ const UserInfo = () => {
         width: 200,
       },
       {
+        field: "birthday",
+        headerName: "Birthday",
+        width: 150,
+        renderCell: (params) =>
+          moment(params.row.birthday).format("YYYY-MM-DD"),
+        editable: true,
+      },
+      {
+        field: "phoneNumber",
+        headerName: "Phone Number",
+        width: 150,
+        editable: true,
+      },
+      {
         field: "role",
         headerName: "Role",
         width: 100,
@@ -71,7 +85,7 @@ const UserInfo = () => {
     []
   );
   return (
-    <Box sx={{ height: 400, width: "90%", margin: "0 auto" }}>
+    <Box sx={{ height: 415, width: "100%", margin: "0 auto" }}>
       <Typography
         variant="h4"
         component="h1"

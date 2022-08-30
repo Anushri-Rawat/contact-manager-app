@@ -4,6 +4,7 @@ import {
   Dashboard,
   PermContactCalendar,
   PeopleAlt,
+  CalendarMonth,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -29,6 +30,7 @@ import { logout } from "./../../actions/user";
 import ContactsInfo from "./Contacts/ContactsInfo";
 import UserInfo from "./Users/UserInfo";
 import AddContactForm from "./Contacts/AddContactForm";
+import BigCalendar from "./Calendar/BigCalendar";
 
 const drawerWidth = 240;
 
@@ -105,6 +107,12 @@ const list = [
     link: "contacts",
     component: <ContactsInfo />,
   },
+  {
+    title: "Calender",
+    icon: <CalendarMonth />,
+    link: "calendar",
+    component: <BigCalendar />,
+  },
 ];
 
 const Sidelist = ({ open, setOpen }) => {
@@ -166,7 +174,12 @@ const Sidelist = ({ open, setOpen }) => {
         </Box>
         <Box sx={{ textAlign: "center" }}>
           {open && <Typography>{currentUser?.name}</Typography>}
-          <Typography variant="body2">{currentUser?.role || "role"}</Typography>
+          <Typography
+            variant="body2"
+            sx={{ textTransform: "uppercase", fontSize: "12px" }}
+          >
+            {currentUser?.role || "role"}
+          </Typography>
           {open && (
             <Typography variant="body2">{currentUser?.email}</Typography>
           )}

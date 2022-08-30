@@ -15,11 +15,11 @@ const contactSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "Please provide a valid email"],
   },
-  // photo: {
-  //   type: String,
-  //   default:
-  //     "http://res.cloudinary.com/drz6w1d5q/image/upload/v1661002817/user-62f279e3a337b58b258c5dec-1661002815185.jpeg.jpg",
-  // },
+  photo: {
+    type: String,
+    default:
+      "http://res.cloudinary.com/drz6w1d5q/image/upload/v1661002817/user-62f279e3a337b58b258c5dec-1661002815185.jpeg.jpg",
+  },
   //but a person can have more than one number
   phone_number: {
     type: [String],
@@ -55,6 +55,7 @@ const contactSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  birthday: Date,
 });
 
 // contactSchema.pre("save", async function (next) {

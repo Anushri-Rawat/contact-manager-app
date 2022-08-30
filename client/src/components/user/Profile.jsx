@@ -14,6 +14,7 @@ import { Close, Send } from "@mui/icons-material";
 import Context from "../../context/ContextProvider";
 import { useRef, useContext, useState } from "react";
 import { updateProfile, updateCurrPassword } from "../../actions/user";
+import moment from "moment";
 
 const Profile = () => {
   const { state, dispatch } = useContext(Context);
@@ -22,6 +23,8 @@ const Profile = () => {
   const currentPasswordRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
+  const birthdaydRef = useRef();
+  const phoneNumberRef = useRef();
   const [newPassword, setNewPassword] = useState(false);
 
   const handleClose = () => {
@@ -45,7 +48,8 @@ const Profile = () => {
     const form = new FormData();
     form.append("photo", profile.file);
     form.append("name", nameRef.current.value);
-    console.log(form);
+    form.append("birthday", new Date(birthdaydRef.current.value));
+    form.append("phoneNumber", phoneNumberRef.current.value);
     if (newPassword) {
       const currentPassword = currentPasswordRef.current.value;
       const password = passwordRef.current.value;
@@ -92,6 +96,26 @@ const Profile = () => {
             required
             defaultValue={currentUser?.name}
           />
+          <TextField
+            autoFocus
+            margin="normal"
+            id="birthday"
+            label="Birthday"
+            type="date"
+            fullWidth
+            inputRef={birthdaydRef}
+            defaultValue={moment(currentUser?.birthday).format("YYYY-MM-DD")}
+          />
+          <TextField
+            autoFocus
+            margin="normal"
+            id="Phone number"
+            label="phoneNumber"
+            type="string"
+            fullWidth
+            inputRef={phoneNumberRef}
+            defaultValue={currentUser?.phoneNumber}
+          />
           <label
             htmlFor="profilePhoto"
             style={{
@@ -102,7 +126,7 @@ const Profile = () => {
             }}
           >
             <Avatar
-              src={profile.photoUrl}
+              src={profile.photoUrl ? profile.photoUrl : currentUser?.photo}
               sx={{ width: 75, height: 75, cursor: "pointer" }}
             />
             <input

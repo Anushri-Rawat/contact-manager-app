@@ -9,7 +9,7 @@ const Loading = () => {
     dispatch,
   } = useContext(Context);
   return (
-    <Backdrop open={loading} sx={{ zindex: (theme) => theme.zIndex.model + 1 }}>
+    <Backdrop open={loading} sx={{ zindex: 1000 }}>
       <CircularProgress sx={{ color: "white" }} />
     </Backdrop>
   );

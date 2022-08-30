@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState, useContext } from "react";
 import { Avatar, Box, Typography, Button } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import Context from "../../../context/ContextProvider";
 import { getAllContacts } from "../../../actions/contacts";
 import ContactActions from "./ContactsActions";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import AddContactForm from "./AddContactForm";
+import { grey } from "@mui/material/colors";
+import moment from "moment";
 
 const ContactsInfo = () => {
   const navigate = useNavigate();
+  const [pageSize, setPageSize] = useState(5);
   const {
     state: { contacts, currentUser },
     dispatch,
@@ -23,7 +25,7 @@ const ContactsInfo = () => {
         field: "photo",
         headerName: "Avatar",
         width: 60,
-        renderCell: (params) => <Avatar>{params.row.contact_name[0]}</Avatar>,
+        renderCell: (params) => <Avatar src={params.row.photo} />,
         sortable: false,
         filterable: false,
       },
@@ -38,6 +40,14 @@ const ContactsInfo = () => {
         field: "email",
         headerName: "Email",
         width: 200,
+      },
+      {
+        field: "birthday",
+        headerName: "Birthday",
+        width: 150,
+        renderCell: (params) =>
+          moment(params.row.birthday).format("YYYY-MM-DD"),
+        editable: true,
       },
       {
         field: "phone_number",
@@ -98,7 +108,7 @@ const ContactsInfo = () => {
     []
   );
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <Box sx={{ height: 430, width: "100%" }}>
       <Box
         sx={{
           display: { sm: "flex", md: "grid" },
@@ -128,8 +138,18 @@ const ContactsInfo = () => {
         columns={columns}
         rows={contacts}
         getRowId={(row) => row._id}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pageSize={pageSize}
+        onPageSizeChange={(size) => setPageSize(size)}
+        getRowSpacing={(params) => ({
+          top: params.isFirstVisible ? 0 : 5,
+          bottom: params.isLastVisible ? 0 : 5,
+        })}
+        sx={{
+          [`& .${gridClasses.row}`]: {
+            bgcolor: (theme) =>
+              theme.palette.mode === "light" ? grey[200] : grey[900],
+          },
+        }}
       />
     </Box>
   );

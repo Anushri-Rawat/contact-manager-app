@@ -65,11 +65,13 @@ const PieContactType = () => {
         <Tooltip />
       </PieChart>
       <Box>
-        <Typography variant="h6">Contact Type</Typography>
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          Contact Type
+        </Typography>
         <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
           {COLORS.slice(0, contactsCategory.length).map((color, i) => (
             <Stack key={color} alignItems="center" spacing={1}>
-              <Box sx={{ width: 20, height: 20, background: color }} />
+              <Box sx={{ width: 18, height: 18, background: color }} />
               <Typography variant="body2" sx={{ opacity: 0.7 }}>
                 {contactsCategory[i]["_id"]}
               </Typography>

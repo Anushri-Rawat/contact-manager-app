@@ -16,7 +16,18 @@ import Context from "../../../context/ContextProvider";
 import { getAllUsers } from "../../../actions/user";
 import { getAllContacts, getContactsCategory } from "../../../actions/contacts";
 import PieContactType from "./PieContactType";
+import Calender from "../../../components/calender/Calender";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 
+const objectComparisonCallback = (arrayItemA, arrayItemB) => {
+  if (arrayItemA.created_at > arrayItemB.created_at) {
+    return -1;
+  }
+  if (arrayItemA.created_at < arrayItemB.created_at) {
+    return 1;
+  }
+  return 0;
+};
 const Main = () => {
   const {
     state: { currentUser, users, contacts, contactsCategory },
@@ -26,8 +37,9 @@ const Main = () => {
   useEffect(() => {
     if (users.length === 0) getAllUsers(currentUser, dispatch);
     if (contacts.length === 0) getAllContacts(currentUser, dispatch);
-    if (contactsCategory.length === 0)
+    if (contactsCategory.length === 0) {
       getContactsCategory(currentUser, dispatch);
+    }
   }, [currentUser, users, contacts]);
 
   return (
@@ -35,7 +47,7 @@ const Main = () => {
       sx={{
         display: { sm: "flex", md: "grid" },
         gridTemplateColumns: "1fr 1fr 1fr 1.4fr",
-        gridAutoRows: "minmax(90px, auto)",
+        gridAutoRows: "minmax(100px, auto)",
         gap: 3,
         textAlign: "center",
         flexDirection: "column",
@@ -84,51 +96,93 @@ const Main = () => {
         <Box>
           <Typography>Recently added Users</Typography>
           <List>
-            {users.slice(0, 4).map((user, i) => (
-              <Box key={user._id}>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar alt={user?.name} src={user?.photo} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={user?.name}
-                    secondary={`Time Created: ${moment(user?.created_at).format(
-                      "YYYY-MM-DD H:mm:ss"
-                    )}`}
-                  />
-                </ListItem>
-                {i !== 3 && <Divider variant="inset" />}
-              </Box>
-            ))}
+            {[...users]
+              .sort(objectComparisonCallback)
+              .slice(0, 4)
+              .map((user, i) => (
+                <Box key={user._id}>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar alt={user?.name} src={user?.photo} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={user?.name}
+                      secondary={`Time Created: ${moment(
+                        user?.created_at
+                      ).format("YYYY-MM-DD H:mm:ss")}`}
+                    />
+                  </ListItem>
+                  {i !== 3 && <Divider variant="inset" />}
+                </Box>
+              ))}
           </List>
         </Box>
         <Divider sx={{ mt: 1, mb: 2, opacity: 0.7 }} />
         <Box>
           <Typography>Recently added Contacts</Typography>
           <List>
-            {contacts.slice(0, 4).map((contacts) => (
-              <Box key={contacts._id}>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar alt={contacts?.contact_name} variant="rounded">
-                      {contacts?.contact_name[0]}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={contacts?.contact_name}
-                    secondary={`Added: ${moment(
-                      contacts?.created_at
-                    ).fromNow()}`}
-                  />
-                </ListItem>
-              </Box>
-            ))}
+            {[...contacts]
+              .sort(objectComparisonCallback)
+              .slice(0, 4)
+              .map((contacts) => (
+                <Box key={contacts._id}>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar alt={contacts?.contact_name} variant="rounded">
+                        {contacts?.contact_name[0]}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={contacts?.contact_name}
+                      secondary={`Added: ${moment(
+                        contacts?.created_at
+                      ).fromNow()}`}
+                    />
+                  </ListItem>
+                </Box>
+              ))}
           </List>
         </Box>
       </Paper>
       <Paper elevation={3} sx={{ p: 2, gridColumn: "1/4" }}>
         {contacts.length > 0 ? <PieContactType /> : ""}
       </Paper>
+      <Box
+        sx={{
+          display: { xm: "flex", sm: "grid" },
+          gridTemplateColumns: "1fr 1fr",
+          gridAutoRows: "minmax(100px, auto)",
+          gap: 3,
+          textAlign: "center",
+          flexDirection: "column",
+          gridColumn: "1/4",
+        }}
+      >
+        <Paper elevation={3}>
+          <Calender />
+        </Paper>
+        <Paper elevation={3} sx={{ p: 1 }}>
+          <Typography>Events List</Typography>
+          {currentUser?.eventsList.length > 0
+            ? currentUser?.eventsList.slice(0, 4).map((event) => (
+                <Box
+                  key={event.title}
+                  sx={{ display: "flex", alignItems: "center" }}
+                >
+                  <ListItem sx={{ padding: "2px 8px" }}>
+                    <ListItemAvatar>
+                      <NotificationsActiveIcon />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={event?.title}
+                      secondary={`Deadline: ${moment(event?.end).fromNow()}`}
+                    />
+                  </ListItem>
+                </Box>
+              ))
+            : "No events"}
+        </Paper>
+      </Box>
     </Box>
   );
 };

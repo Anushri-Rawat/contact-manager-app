@@ -108,10 +108,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   //3.send it to user email
-  const resetURL = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forgot your password?Submit a patch request with your new password and confirmPassword to ${resetURL}.\nIf not,please ignore this email.`;
+  const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+  const message = `Forgot your password?\nSubmit a patch request with your new password and confirmPassword to ${resetURL}.\nIf not,please ignore this email.`;
 
   try {
     await sendEmail({
@@ -140,6 +138,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .createHash("sha256")
     .update(req.params.token)
     .digest("hex");
+
+  console.log(hashedToken);
 
   const user = await User.findOne({
     passwordResetToken: hashedToken,

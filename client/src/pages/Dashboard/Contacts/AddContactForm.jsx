@@ -6,6 +6,7 @@ import {
   Typography,
   IconButton,
   MenuItem,
+  Avatar,
 } from "@mui/material";
 import React from "react";
 import { useEffect, useRef, useState, useContext } from "react";
@@ -18,11 +19,13 @@ const AddContactForm = () => {
     state: { currentUser, contacts },
     dispatch,
   } = useContext(Context);
+  const [imgFiles, setImgFiles] = useState(null);
 
   // const [countryCode, setCountryCode] = useState("IN");
   // const [stateCode, setStateCode] = useState("DL");
 
-  const nameRef = useRef();
+  const firstnameRef = useRef();
+  const lastnameRef = useRef();
   const emailRef = useRef();
   const phoneNumberRef = useRef();
   const addressRef = useRef();
@@ -30,47 +33,56 @@ const AddContactForm = () => {
   const countryRef = useRef();
   const stateRef = useRef();
   const categoryRef = useRef();
-  //   useEffect(() => {
-  //     fetchCountry();
-  //   }, []);
+  const birthdayRef = useRef();
+
+  const handleChange = (e) => {
+    const files = e.target.files[0];
+    if (files) setImgFiles(files);
+    console.log(imgFiles);
+  };
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
-    const name = nameRef.current.value;
-    const email = emailRef.current.value;
-    const phoneNumber = phoneNumberRef.current.value;
-    const address = addressRef.current.value;
-    const city = cityRef.current.value;
-    const state = stateRef.current.value;
-    const country = countryRef.current.value;
-    const category = categoryRef.current.value;
-    const contact = {
-      contact_name: name,
-      email,
-      phone_number: phoneNumber,
-      address,
-      city,
-      state,
-      country,
-      category,
-    };
-    createContact(currentUser, dispatch, contact, contacts);
+    const form = new FormData();
+    form.append(
+      "contact_name",
+      `${firstnameRef.current.value} ${lastnameRef.current.value}`.trim(" ")
+    );
+    form.append("email", emailRef.current.value);
+    form.append("phone_number", phoneNumberRef.current.value);
+    form.append("address", addressRef.current.value);
+    form.append("city", cityRef.current.value);
+    form.append("state", stateRef.current.value);
+    form.append("country", countryRef.current.value);
+    form.append("category", categoryRef.current.value);
+    form.append("birthday", birthdayRef.current.value);
+    form.append("photo", imgFiles);
+    createContact(currentUser, dispatch, form);
   };
   return (
     <Box sx={{ padding: { sm: "0", md: "0 20px" } }}>
       <Typography variant="h6" color="primary" sx={{ fontWeight: 600 }}>
         Basic Contact form
       </Typography>
-      <form onSubmit={formSubmitHandler}>
-        <Grid container rowSpacing={0} columnSpacing={{ sm: 3, md: 6 }}>
+      <form onSubmit={formSubmitHandler} encType="multipart/form-data">
+        <Grid container rowSpacing={0} columnSpacing={{ sm: 2, md: 4 }}>
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Name"
+              label="FirstName"
               type="text"
               margin="normal"
-              inputRef={nameRef}
+              inputRef={firstnameRef}
               fullWidth
               required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="LastName"
+              type="text"
+              margin="normal"
+              inputRef={lastnameRef}
+              fullWidth
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -82,6 +94,16 @@ const AddContactForm = () => {
               inputRef={emailRef}
               fullWidth
               required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Birthday"
+              type="date"
+              InputLabelProps={{ shrink: true, required: true }}
+              margin="normal"
+              inputRef={birthdayRef}
+              fullWidth
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -164,7 +186,7 @@ const AddContactForm = () => {
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <TextField
               label="Address"
               type="text"
@@ -175,6 +197,32 @@ const AddContactForm = () => {
               rows={3}
               fullWidth
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              sx={{
+                border: "2px dashed rgb(118, 118, 118)",
+                textAlign: "center",
+                p: 2,
+                margin: "18px 0",
+              }}
+            >
+              <Typography variant="h6">Add Photo here</Typography>
+              <p>Drop files or click here to upload</p>
+              <label htmlFor="photo">
+                {/* <Button variant="contained" size="small">
+                  Choose image
+                </Button> */}
+                <input
+                  accept="image/*"
+                  id="photo"
+                  type="file"
+                  name="image"
+                  onChange={handleChange}
+                  // style={{ display: "none" }}
+                />
+              </label>
+            </Box>
           </Grid>
         </Grid>
         <IconButton>

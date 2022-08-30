@@ -66,10 +66,13 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       400
     );
   }
+
+  const user = await User.findById(req.user.id);
   //.filtered out unwanted fields names that dont need to be updated for eg role
-  const filteredObj = filterObj(req.body, "name");
-  console.log(req.photo);
+  const filteredObj = filterObj(req.body, "name", "birthday", "phoneNumber");
   if (req.file) filteredObj.photo = req.photo;
+  if (req.body.eventsList)
+    filteredObj.eventsList = [...user.eventsList, ...req.body.eventsList];
 
   //2..if password is not posted we need to update the user
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredObj, {

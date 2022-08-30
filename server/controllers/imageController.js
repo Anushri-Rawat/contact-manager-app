@@ -37,13 +37,14 @@ cloudinary.config({
 });
 
 exports.uploadImageOnCloudinary = catchAsync(async (req, res, next) => {
-  console.log(req.file);
-  const result = await cloudinary.uploader.upload(req.file.path, {
-    public_id: `${req.file.filename}`,
-  });
-  req.photo = result.url;
-  fs.unlink(`public/img/${req.file.filename}`, (error) => {
-    if (error) return;
-  });
+  if (req.file) {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      public_id: `${req.file.filename}`,
+    });
+    req.photo = result.url;
+    fs.unlink(`public/img/${req.file.filename}`, (error) => {
+      if (error) return;
+    });
+  }
   next();
 });

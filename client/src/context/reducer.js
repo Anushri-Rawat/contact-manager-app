@@ -55,6 +55,15 @@ const reducer = (state, action) => {
       };
     case "OPEN_UPDATE_FORM":
       return { ...state, updateForm: true };
+    case "ADD_EVENTS":
+      localStorage.setItem(
+        "currentUser",
+        JSON.stringify({ ...state.currentUser, ...action.payload })
+      );
+      return {
+        ...state,
+        currentUser: { ...state.currentUser, ...action.payload },
+      };
     default:
       throw new Error("No matched action");
   }

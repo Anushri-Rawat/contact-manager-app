@@ -1,6 +1,7 @@
 const express = require("express");
 const contactController = require("./../controllers/contactController");
 const authController = require("./../controllers/authController");
+const imageController = require("./../controllers/imageController");
 
 const router = express.Router();
 
@@ -11,7 +12,12 @@ router.route("/contact-category").get(contactController.groupContactsCategory);
 router
   .route("/")
   .get(contactController.getAllContacts)
-  .post(contactController.setUserIds, contactController.createContact);
+  .post(
+    imageController.uploadUserPhoto,
+    imageController.uploadImageOnCloudinary,
+    contactController.setUserIds,
+    contactController.createContact
+  );
 router
   .route("/:id")
   .get(contactController.getContact)

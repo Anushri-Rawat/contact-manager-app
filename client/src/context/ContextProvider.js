@@ -11,6 +11,7 @@ const initialState = {
   contacts: [],
   contactsCategory: [],
   updateForm: false,
+  eventsList: [],
 };
 
 const Context = createContext();

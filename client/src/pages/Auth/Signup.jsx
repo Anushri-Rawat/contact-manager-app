@@ -19,9 +19,12 @@ const container = {
   justifyContent: "center",
   alignItems: "center",
   width: "100%",
+  padding: 0,
 };
 
 const flexProp = {
+  height: "100vh",
+  width: "50%",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -47,108 +50,99 @@ const Signup = () => {
   };
 
   return (
-    <Container sx={container}>
-      <Card sx={{ display: "flex", width: "75%", height: "65vh" }}>
-        <Box
-          component="div"
+    <Box sx={container}>
+      <Box
+        component="div"
+        sx={{
+          background: "black",
+          color: "white",
+          textAlign: "center",
+          ...flexProp,
+        }}
+      >
+        <Typography variant="h4" sx={{ fontWeight: 600 }}>
+          Welcome to Connect!!
+        </Typography>
+        <p>Already have an account?</p>
+        <Button
+          size="medium"
           sx={{
-            width: "45%",
-            background: "black",
-            color: "white",
-            textAlign: "center",
-            ...flexProp,
+            background: "white",
+            color: "black",
+            "&:hover": { backgroundColor: "#1976d2" },
+          }}
+          onClick={() => {
+            navigate("/login");
           }}
         >
-          <Typography variant="h4" sx={{ fontWeight: 600 }}>
-            Welcome to Connect!!
-          </Typography>
-          <p>Already have an account?</p>
+          Login
+        </Button>
+      </Box>
+      <Box component="div" sx={flexProp}>
+        <Typography component="div" variant="h5" sx={{ fontWeight: "600" }}>
+          Sign up
+        </Typography>
+        <form style={{ width: "75%" }} onSubmit={formSubmitHandler}>
+          <TextField
+            label="Username"
+            type="text"
+            size="small"
+            placeholder="Enter username"
+            required
+            inputRef={nameRef}
+            margin="dense"
+            fullWidth
+          />
+          <TextField
+            label="Email"
+            type="email"
+            size="small"
+            placeholder="Enter username"
+            required
+            inputRef={emailRef}
+            margin="dense"
+            fullWidth
+          />
+          <TextField
+            label="Password"
+            placeholder="Enter password"
+            type="password"
+            size="small"
+            inputRef={passwordRef}
+            required
+            margin="dense"
+            fullWidth
+          />
+          <TextField
+            label="Confirm Password"
+            placeholder="Enter password"
+            type="password"
+            size="small"
+            inputRef={confirmPasswordRef}
+            required
+            margin="dense"
+            fullWidth
+          />
+          <FormControlLabel
+            component="div"
+            control={<Checkbox name="checkedB" color="primary" />}
+            label="Remember me"
+          />
           <Button
-            size="medium"
+            type="submit"
+            variant="contained"
             sx={{
-              background: "white",
-              color: "black",
-              "&:hover": { backgroundColor: "#1976d2" },
+              color: "white",
+              background: "black",
+              margin: "5px 0 10px",
             }}
-            onClick={() => {
-              navigate("/login");
-            }}
+            fullWidth
           >
-            Login
+            Signup
           </Button>
-        </Box>
-        <Box
-          component="div"
-          sx={{
-            width: "55%",
-            ...flexProp,
-          }}
-        >
-          <Typography component="div" variant="h5" sx={{ fontWeight: "600" }}>
-            Sign up
-          </Typography>
-          <form style={{ width: "75%" }} onSubmit={formSubmitHandler}>
-            <TextField
-              label="Username"
-              type="text"
-              size="small"
-              placeholder="Enter username"
-              required
-              inputRef={nameRef}
-              margin="dense"
-              fullWidth
-            />
-            <TextField
-              label="Email"
-              type="email"
-              size="small"
-              placeholder="Enter username"
-              required
-              inputRef={emailRef}
-              margin="dense"
-              fullWidth
-            />
-            <TextField
-              label="Password"
-              placeholder="Enter password"
-              type="password"
-              size="small"
-              inputRef={passwordRef}
-              required
-              margin="dense"
-              fullWidth
-            />
-            <TextField
-              label="Confirm Password"
-              placeholder="Enter password"
-              type="password"
-              size="small"
-              inputRef={confirmPasswordRef}
-              required
-              margin="dense"
-              fullWidth
-            />
-            <FormControlLabel
-              component="div"
-              control={<Checkbox name="checkedB" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                color: "white",
-                background: "black",
-                margin: "5px 0 10px",
-              }}
-              fullWidth
-            >
-              Signup
-            </Button>
-          </form>
-        </Box>
-      </Card>
-    </Container>
+        </form>
+      </Box>
+    </Box>
   );
 };
 

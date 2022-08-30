@@ -74,7 +74,12 @@ export const updateProfile = async (
     if (data.status == "error" || data.status == "fail") {
       throw new Error(data.message);
     }
+
     if (data && !newPassword) {
+      dispatch({
+        type: "UPDATE_USER",
+        payload: { ...data.data.data, token: currentUser.token },
+      });
       dispatch({
         type: "UPDATE_ALERT",
         payload: {
@@ -85,7 +90,6 @@ export const updateProfile = async (
       });
     }
   } catch (error) {
-    dispatch({ type: "END_LOADING" });
     dispatch({
       type: "UPDATE_ALERT",
       payload: { open: true, severity: "error", message: error.message },
@@ -108,6 +112,7 @@ export const getAllUsers = async (currentUser, dispatch) => {
     dispatch({ type: "UPDATE_ALL_USERS", payload: result.data.users });
   }
 };
+
 export const deleteUser = async (currentUser, dispatch, id) => {
   dispatch({ type: "START_LOADING" });
   const result = await fetchData(
@@ -176,5 +181,93 @@ export const updateCurrPassword = async (currentUser, body, dispatch) => {
         message: "User has been updated successfully",
       },
     });
+  }
+};
+
+export const forgotPassword = async (currentUser, body, dispatch) => {
+  dispatch({ type: "START_LOADING" });
+  const result = await fetchData(
+    {
+      url: `http://localhost:8000/api/v1/users/forgotPassword`,
+      method: "POST",
+      token: currentUser.token,
+      body,
+    },
+    dispatch
+  );
+  dispatch({ type: "END_LOADING" });
+  if (result) {
+    dispatch({
+      type: "UPDATE_ALERT",
+      payload: {
+        open: true,
+        severity: result.status,
+        message: result.message,
+      },
+    });
+  }
+};
+
+export const resetPassword = async (currentUser, body, id, dispatch) => {
+  dispatch({ type: "START_LOADING" });
+  const result = await fetchData(
+    {
+      url: `http://localhost:8000/api/v1/users/resetPassword/${id}`,
+      method: "POST",
+      body,
+    },
+    dispatch
+  );
+  dispatch({ type: "END_LOADING" });
+  if (result) {
+    dispatch({
+      type: "UPDATE_ALERT",
+      payload: {
+        open: true,
+        severity: "success",
+        message: "Password changed",
+      },
+    });
+  }
+};
+
+export const updateEvents = async (currentUser, body, dispatch) => {
+  try {
+    const data = await axios.patch(
+      "http://localhost:8000/api/v1/users/updateMe",
+      body,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${currentUser.token}`,
+        },
+      }
+    );
+    console.log(data);
+    if (data.status == "error" || data.status == "fail") {
+      throw new Error(data.message);
+    }
+
+    if (data) {
+      dispatch({
+        type: "ADD_EVENTS",
+        payload: { eventsList: data.data.data.eventsList },
+      });
+      dispatch({
+        type: "UPDATE_ALERT",
+        payload: {
+          open: true,
+          severity: "success",
+          message: "Events has been added successfully",
+        },
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: "UPDATE_ALERT",
+      payload: { open: true, severity: "error", message: error.message },
+    });
+    console.log(error);
+    return null;
   }
 };

@@ -39,6 +39,7 @@ exports.getContact = catchAsync(async (req, res) => {
 
 exports.createContact = catchAsync(async (req, res, next) => {
   const newContact = await Contact.create(req.body);
+  if (req.file) newContact.photo = req.photo;
   res.status(201).json({
     status: "success",
     data: newContact,
@@ -52,7 +53,9 @@ exports.updateContact = catchAsync(async (req, res, next) => {
     "address",
     "city",
     "country",
-    "category"
+    "state",
+    "category",
+    "birthday"
   );
   const contact = await Contact.findByIdAndUpdate(
     req.params.id,
